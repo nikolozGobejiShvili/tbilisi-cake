@@ -1,0 +1,766 @@
+@import "tailwindcss";
+
+/*
+  A candle-lit patisserie at night. Every colour comes from the logo: blush is its field, and the
+  ground is its chestnut lettering taken down almost to black, like dark chocolate. Gold comes from
+  the wavy candles in the real photographs. Contrast is checked in src/lib/tokens.test.ts.
+*/
+:root {
+  color-scheme: dark;
+
+  --noir: #170b08;
+  --cocoa: #25120d;
+  --blush: #eac0ba;
+  --cream: #f7eae3;
+  --gold: #c9a25e;
+  --error-tone: #ffa9a0;
+
+  --ground: var(--noir);
+  --ink: var(--cream);
+  --heading: var(--blush);
+  --action: var(--blush);
+  --on-action: var(--noir);
+  --sheet: var(--cocoa);
+  --on-sheet: var(--cream);
+  --sheet-action: var(--blush);
+  --error: var(--error-tone);
+  --focus: var(--blush);
+
+  --ease-soft: cubic-bezier(0.22, 0.8, 0.28, 1);
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-ink: var(--ink);
+  --color-action: var(--action);
+  --color-on-action: var(--on-action);
+  --color-sheet: var(--sheet);
+  --color-on-sheet: var(--on-sheet);
+  --font-display: var(--font-latin-display), var(--font-georgian-display), Georgia, serif;
+  --font-sans: var(--font-latin-text), var(--font-georgian-text), system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+    font-synthesis: none;
+    background: var(--ground);
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    min-height: 100svh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Georgian has no capitals and reads large, so it gets a slightly looser setting. */
+  html[lang="ka"] body {
+    line-height: 1.7;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--heading);
+    text-wrap: balance;
+    overflow-wrap: break-word;
+  }
+
+  /* A set colour, not currentColor: the text of a filled button matches the ground around it. */
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  a {
+    text-decoration-line: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+
+  button {
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+  }
+
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  select option {
+    background: var(--cocoa);
+  }
+
+  main {
+    padding-top: 5.5rem;
+  }
+
+  main:has(.stage) {
+    padding-top: 0;
+  }
+}
+
+/* Everything below sits in a layer, so Tailwind utilities on the same element can still override it. */
+@layer components {
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--heading);
+}
+
+:lang(ka) .display,
+:lang(ka) h1,
+:lang(ka) h2 {
+  letter-spacing: -0.005em;
+}
+
+.wrap {
+  padding-inline: var(--gutter);
+  max-width: 96rem;
+  margin-inline: auto;
+}
+
+.prose-col {
+  max-width: 62ch;
+}
+
+.t-hero {
+  font-size: clamp(2.75rem, 6.4vw, 7rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+
+:lang(ka) .t-hero {
+  font-size: clamp(2.4rem, 5.4vw, 6rem);
+  line-height: 1.14;
+}
+
+.t-title {
+  font-size: clamp(2.2rem, 5vw, 5rem);
+  line-height: 1.06;
+  letter-spacing: -0.012em;
+}
+
+:lang(ka) .t-title {
+  font-size: clamp(1.95rem, 4.2vw, 4.25rem);
+  line-height: 1.18;
+}
+
+.t-section {
+  font-size: clamp(1.75rem, 3.2vw, 3rem);
+  line-height: 1.12;
+}
+
+.t-lede {
+  font-size: clamp(1.1rem, 1.45vw, 1.375rem);
+  line-height: 1.5;
+}
+
+.t-small {
+  font-size: 0.9375rem;
+}
+
+/* Actions */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 3rem;
+  padding: 0.7rem 1.6rem;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  text-decoration: none;
+  line-height: 1.25;
+  text-align: center;
+  transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.btn-primary {
+  background: var(--action);
+  color: var(--on-action);
+}
+
+.btn-primary:hover {
+  background: var(--cream);
+}
+
+.btn-line {
+  border-color: color-mix(in srgb, currentColor 60%, transparent);
+  background: transparent;
+}
+
+.btn-line:hover {
+  background: var(--cream);
+  border-color: var(--cream);
+  color: var(--noir);
+}
+
+.on-sheet {
+  --focus: var(--blush);
+  background: var(--sheet);
+  color: var(--on-sheet);
+}
+
+/* The stage: a tall section whose inner frame stays pinned while the cake is scrolled through. */
+.stage {
+  position: relative;
+}
+
+.stage-frame {
+  position: relative;
+  overflow: clip;
+}
+
+html.stage-on .stage {
+  height: 560svh;
+}
+
+html.stage-on .stage-frame {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+
+.stage-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(46% 62% at 69% 50%, rgba(146, 66, 44, 0.42), transparent 72%),
+    radial-gradient(70% 40% at 69% 96%, rgba(201, 162, 94, 0.08), transparent 70%);
+}
+
+.stage-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.9s;
+}
+
+.stage-poster {
+  display: none;
+}
+
+html:not(.stage-on) .stage-glow,
+html:not(.stage-on) .stage-canvas,
+html:not(.stage-on) .stage-cue,
+html:not(.stage-on) .stage-track,
+html:not(.stage-on) .stage-labels {
+  display: none;
+}
+
+html:not(.stage-on) .stage-poster {
+  display: block;
+  max-width: 34rem;
+  margin-inline: auto;
+  padding-top: 5.5rem;
+}
+
+html:not(.stage-on) .stage-poster img {
+  width: 100%;
+  height: auto;
+  -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent);
+  mask-image: radial-gradient(closest-side, #000 74%, transparent);
+}
+
+.chapter {
+  padding: 2.5rem var(--gutter);
+}
+
+html.stage-on .chapter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-block: 5rem;
+  pointer-events: none;
+}
+
+html.stage-on .chapter > * {
+  max-width: min(42vw, 44rem);
+  pointer-events: auto;
+}
+
+html.stage-on .chapter-side {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.stage-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.stage-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  white-space: nowrap;
+  font-size: 0.9375rem;
+  opacity: 0;
+  will-change: transform;
+}
+
+.stage-label::before {
+  content: "";
+  width: clamp(1rem, 3vw, 3.25rem);
+  height: 1px;
+  background: var(--gold);
+}
+
+/* Fine grain over the dark gradient: it removes banding and gives the stage a photographic surface. */
+.stage-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+html:not(.stage-on) .stage-grain {
+  display: none;
+}
+
+/* The notice above the stage scrolls away, but on arrival it pushes the frame down by its height. */
+.stage-cue {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  opacity: 0.85;
+}
+
+.stage-cue-line {
+  width: 3.25rem;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left;
+  animation: cue-line 2.6s var(--ease-soft) infinite;
+}
+
+@keyframes cue-line {
+  0% {
+    transform: scaleX(0);
+  }
+  55% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+.stage-track {
+  position: absolute;
+  right: 1.4rem;
+  top: 24%;
+  bottom: 24%;
+  width: 1px;
+  background: rgba(234, 192, 186, 0.2);
+}
+
+.stage-track-fill {
+  width: 100%;
+  height: 100%;
+  background: var(--blush);
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+/* On phones the cake takes the upper part and the words sit below, over a soft fade. */
+@media (max-aspect-ratio: 85/100) {
+  .stage-glow {
+    background: radial-gradient(90% 44% at 50% 36%, rgba(146, 66, 44, 0.42), transparent 74%);
+  }
+  html.stage-on .stage {
+    height: 480svh;
+  }
+  html.stage-on .chapter {
+    justify-content: flex-end;
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+    padding-top: 0;
+    background: linear-gradient(to top, var(--noir) 0, rgba(23, 11, 8, 0.86) 36%, transparent 58%);
+  }
+  html.stage-on .chapter > * {
+    max-width: 100%;
+  }
+  /* On arrival a phone also has the notice above the stage, so the opening words sit higher. */
+  html.stage-on .chapter-hero {
+    padding-bottom: calc(10.5rem + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--noir) 0, rgba(23, 11, 8, 0.86) 44%, transparent 66%);
+  }
+  html.stage-on .chapter .t-hero,
+  html.stage-on .chapter .t-title {
+    font-size: clamp(2rem, 9.4vw, 3.5rem);
+  }
+  .stage-cue,
+  .stage-track {
+    display: none;
+  }
+  .stage-label {
+    font-size: 0.875rem;
+    line-height: 1.2;
+  }
+  .stage-label span {
+    white-space: normal;
+    max-width: 6.25rem;
+  }
+}
+
+/* Lookbook: an orderly grid of equal tiles, so the eye can compare cakes at a glance. */
+.lookbook {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1.5rem, 2.6vw, 2.5rem) clamp(0.875rem, 2vw, 1.75rem);
+  max-width: 84rem;
+}
+
+@media (max-width: 1000px) {
+  .lookbook {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .lookbook {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.look {
+  min-width: 0;
+}
+
+.look-frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--cocoa);
+  text-decoration: none;
+}
+
+.photo-tile {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 58%;
+  transition: transform 0.7s var(--ease-soft);
+}
+
+.look-frame:hover .photo-tile,
+.look-frame:focus-visible .photo-tile {
+  transform: scale(1.035);
+}
+
+.look-caption {
+  margin-top: 0.6rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.25rem;
+}
+
+.look-invite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  border: 1px solid rgba(234, 192, 186, 0.35);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.look-invite:hover {
+  background: var(--blush);
+  border-color: var(--blush);
+}
+
+.look-invite:hover .display {
+  color: var(--noir);
+}
+
+/* A photo on its own page or in the lightbox keeps its whole shape. */
+.look-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Form controls */
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field label,
+.field-label {
+  font-weight: 500;
+}
+
+.input {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(247, 234, 227, 0.04);
+  border: 1px solid color-mix(in srgb, currentColor 62%, transparent);
+  border-radius: 2px;
+}
+
+.input:focus-visible {
+  outline-offset: 1px;
+}
+
+.hint {
+  font-size: 0.9375rem;
+  opacity: 0.82;
+}
+
+.error {
+  font-size: 0.9375rem;
+  color: var(--error);
+  font-weight: 500;
+}
+
+/* A choice fills in when picked. */
+.choice {
+  display: block;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.75rem 1rem;
+  text-align: start;
+  border: 1px solid color-mix(in srgb, currentColor 62%, transparent);
+  border-radius: 2px;
+  background: transparent;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.choice:hover {
+  background: rgba(247, 234, 227, 0.07);
+}
+
+.choice[aria-pressed="true"] {
+  background: var(--blush);
+  border-color: var(--blush);
+  color: var(--noir);
+}
+
+.choice[aria-pressed="true"] .display {
+  color: var(--noir);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Calendar */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.cal-day {
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+}
+
+.cal-day:hover:not(:disabled) {
+  background: rgba(247, 234, 227, 0.1);
+}
+
+.cal-day:disabled {
+  opacity: 0.4;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.cal-day[aria-pressed="true"] {
+  background: var(--blush);
+  color: var(--noir);
+  opacity: 1;
+}
+
+/* The cross-section in the builder grows upward from the board. */
+.is-animated .slice-layer {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: layer-grow 0.42s var(--ease-soft) both;
+}
+
+@keyframes layer-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.step-enter {
+  animation: step-in 0.35s var(--ease-soft) both;
+}
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Builder layout: the choices beside the drawing that answers them. */
+.builder {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 25rem);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+}
+
+.builder-aside {
+  position: sticky;
+  top: 1.5rem;
+}
+
+@media (max-width: 960px) {
+  .builder {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .builder-aside {
+    position: static;
+    order: -1;
+  }
+  .builder-aside .builder-summary {
+    display: none !important;
+  }
+  .builder-aside .cake-drawing {
+    max-width: 13rem !important;
+    margin-inline: auto;
+    display: block;
+  }
+}
+
+/* Sticky order action on phones, always within reach of the thumb. */
+.phone-bar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 40;
+  display: none;
+  padding: 0.5rem var(--gutter) calc(0.5rem + env(safe-area-inset-bottom));
+  background: var(--noir);
+  border-top: 1px solid rgba(234, 192, 186, 0.25);
+}
+
+@media (max-width: 720px) {
+  .phone-bar {
+    display: block;
+  }
+  body:has(.phone-bar) {
+    padding-bottom: 4.25rem;
+  }
+}
+
+/* Native dialog for the lightbox */
+dialog.lightbox {
+  margin: auto;
+  border: 0;
+  padding: 0;
+  max-width: min(46rem, 94vw);
+  max-height: 92svh;
+  overflow: auto;
+}
+
+dialog.lightbox::backdrop {
+  background: rgba(10, 5, 3, 0.86);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Panel */
+.panel-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.panel-table th,
+.panel-table td {
+  text-align: start;
+  padding: 0.7rem 0.6rem;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  vertical-align: top;
+}
+
+.panel-table th {
+  font-weight: 500;
+}
+
+@media (max-width: 720px) {
+  .panel-table thead {
+    display: none;
+  }
+  .panel-table tr {
+    display: block;
+    padding-block: 0.6rem;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  }
+  .panel-table td {
+    display: block;
+    border: 0;
+    padding: 0.1rem 0;
+  }
+}
+
+}

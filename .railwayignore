@@ -1,0 +1,14 @@
+# Never upload secrets, local orders or customer photos.
+.env*
+!.env.example
+data/
+data-test/
+
+# Not needed on the server.
+research/
+e2e/
+playwright.config.ts
+test-results/
+playwright-report/
+.next/
+node_modules/
